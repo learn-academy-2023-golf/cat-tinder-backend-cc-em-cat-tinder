@@ -30,6 +30,19 @@ RSpec.describe "Cats", type: :request do
       cat = Cat.first
       expect(cat.name).to eq 'Buster'
     end
+    it "doesn't create a cat without a name" do
+      cat_params = {
+        cat: {
+          age: 2,
+          enjoys: 'Walks in the park',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+      expect(response.status).to eq 422
+      json = JSON.parse(response.body)
+      expect(json['name']).to include "can't be blank"
+    end
   end
   describe "PATCH /update" do
     let!(:cat) {
@@ -48,6 +61,27 @@ RSpec.describe "Cats", type: :request do
         expect(response).to have_http_status(200)
         expect(cat.name).to eq 'Jack'
       end
+    end
+    it "doesn't update without valid parameters" do
+      cat_params = {
+        cat: {
+          name: 'Homer',
+          age: 12,
+          enjoys: 'Food mostly, really just food.',
+          image: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1015&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+      cat = Cat.first
+      updated_params = { cat: {
+        name: '',
+        age: nil,
+        enjoys: '',
+        image: ''
+      } 
+    }
+      patch "/cats/#{cat.id}", params: updated_params
+      expect(response.status).to eq 422
     end
   end
   describe "DELETE /destroy" do
