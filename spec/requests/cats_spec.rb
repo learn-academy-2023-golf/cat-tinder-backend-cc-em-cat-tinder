@@ -29,6 +29,9 @@ RSpec.describe "Cats", type: :request do
       expect(response).to have_http_status(200)
       cat = Cat.first
       expect(cat.name).to eq 'Buster'
+      expect(cat.age).to eq 4
+      expect(cat.enjoys).to eq 'Meow Mix, and plenty of sunshine.'
+      expect(cat.image).to eq 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
     end
     it "doesn't create a cat without a name" do
       cat_params = {
@@ -42,6 +45,45 @@ RSpec.describe "Cats", type: :request do
       expect(response.status).to eq 422
       json = JSON.parse(response.body)
       expect(json['name']).to include "can't be blank"
+    end
+    it "doesn't create a cat without a age" do
+      cat_params = {
+        cat: {
+          name: 'Homer',
+          enjoys: 'Walks in the park',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+      expect(response.status).to eq 422
+      json = JSON.parse(response.body)
+      expect(json['age']).to include "can't be blank"
+    end
+    it "doesn't create a cat without a enjoys" do
+      cat_params = {
+        cat: {
+          name: 'Homer',
+          age: 2,
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+      post '/cats', params: cat_params
+      expect(response.status).to eq 422
+      json = JSON.parse(response.body)
+      expect(json['enjoys']).to include "can't be blank"
+    end
+    it "doesn't create a cat without a image" do
+      cat_params = {
+        cat: {
+          name: 'Homer',
+          age: 2,
+          enjoys: 'Walks in the park'
+        }
+      }
+      post '/cats', params: cat_params
+      expect(response.status).to eq 422
+      json = JSON.parse(response.body)
+      expect(json['image']).to include "can't be blank"
     end
   end
   describe "PATCH /update" do
