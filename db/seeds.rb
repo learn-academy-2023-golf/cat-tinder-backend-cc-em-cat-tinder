@@ -23,3 +23,39 @@ cats.each do |each_cat|
   Cat.create each_cat
   puts "creating cat #{each_cat}"
 end
+
+toys = [
+  {
+    name: 'Toy Mouse',
+    cat_id: 1
+  },
+  {
+    name: 'Feather Toy',
+    cat_id: 1
+  },
+  {
+    name: 'Laser Pointer',
+    cat_id: 2
+  },
+  {
+    name: 'Paper Ball',
+    cat_id: 2
+  },
+  {
+    name: 'Cardboard Box',
+    cat_id: 3
+  },
+  {
+    name: 'Ball in a Ring',
+    cat_id: 3
+  },
+  {
+    name: 'Tunnel',
+    cat_id: 2
+  }
+]
+
+toys.each do |each_toy|
+  Toy.create each_toy
+  puts "creating toy #{each_toy}"
+end
